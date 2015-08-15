@@ -7,7 +7,7 @@ if (Meteor.isClient) {
   // trigger a Redux action when collection data changes
   // this adds it back into the system
   trackCollection(Players, function(data) {
-    store.dispatch(Actions.playersChanged(data));
+    store.dispatch( Actions.playersChanged(data) );
   });
 
   Template.leaderboard.helpers({
@@ -22,9 +22,7 @@ if (Meteor.isClient) {
 
   Template.leaderboard.events({
     'click .inc': function () {
-      var playerId = Session.get("selectedPlayer");
-      store.dispatch( Actions.incrementScore(playerId) );
-      Players.update(playerId, {$inc: {score: 5}});
+      store.dispatch( Actions.incrementScore() );
     }
   });
 
@@ -36,9 +34,7 @@ if (Meteor.isClient) {
 
   Template.player.events({
     'click': function () {
-      var playerId = Session.get("selectedPlayer");
-      store.dispatch( Actions.selectPlayer(playerId) );
-      Session.set("selectedPlayer", this._id);
+      store.dispatch( Actions.selectPlayer(this._id) );
     }
   });
 }
