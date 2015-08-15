@@ -16,8 +16,8 @@ Actions.playersChanged = function playersChanged(newDocs) {
 
 // doesn't return payload because our collection watcher
 // will send a CHANGED action and update the store
-Actions.incrementScore = function incrementScore() {
-  let playerId = Session.get("selectedPlayer");
+Actions.incrementScore = function incrementScore(playerId) {
+  //let playerId = Session.get("selectedPlayer");
   Players.update({_id: playerId}, {$inc: {score: 5}});
   // TODO call FAILED action on error
   return { type: 'INCREMENT_SCORE' };

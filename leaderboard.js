@@ -10,6 +10,23 @@ if (Meteor.isClient) {
     store.dispatch( Actions.playersChanged(data) );
   });
 
+  // events
+
+  Template.leaderboard.events({
+    'click .inc': function () {
+      var playerId = store.getState().userInterface.selectedId;
+      store.dispatch( Actions.incrementScore(playerId) );
+    }
+  });
+
+  Template.player.events({
+    'click': function () {
+      store.dispatch( Actions.selectPlayer(this._id) );
+    }
+  });
+
+  // helpers
+
   Template.leaderboard.helpers({
     players: function () {
       return Players.find({}, { sort: { score: -1, name: 1 } });
@@ -20,21 +37,9 @@ if (Meteor.isClient) {
     }
   });
 
-  Template.leaderboard.events({
-    'click .inc': function () {
-      store.dispatch( Actions.incrementScore() );
-    }
-  });
-
   Template.player.helpers({
     selected: function () {
       return Session.equals("selectedPlayer", this._id) ? "selected" : '';
-    }
-  });
-
-  Template.player.events({
-    'click': function () {
-      store.dispatch( Actions.selectPlayer(this._id) );
     }
   });
 }
