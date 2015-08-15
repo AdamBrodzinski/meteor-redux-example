@@ -3,7 +3,7 @@
 
 // console.log our state changes
 logger = store => next => action => {
-  log('[Dispatching]', action);
+  log('\n[Dispatching]', action);
   // essentially call 'dispatch'
   let result = next(action);
   log('[Store]', store.getState());

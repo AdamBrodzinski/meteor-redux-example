@@ -22,7 +22,9 @@ if (Meteor.isClient) {
 
   Template.leaderboard.events({
     'click .inc': function () {
-      Players.update(Session.get("selectedPlayer"), {$inc: {score: 5}});
+      var playerId = Session.get("selectedPlayer");
+      store.dispatch( Actions.incrementScore(playerId) );
+      Players.update(playerId, {$inc: {score: 5}});
     }
   });
 
@@ -34,6 +36,8 @@ if (Meteor.isClient) {
 
   Template.player.events({
     'click': function () {
+      var playerId = Session.get("selectedPlayer");
+      store.dispatch( Actions.selectPlayer(playerId) );
       Session.set("selectedPlayer", this._id);
     }
   });
