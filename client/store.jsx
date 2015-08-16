@@ -2,29 +2,8 @@ let { createStore, combineReducers, applyMiddleware } = Redux;
 
 // Redux has a single store. to reduce complexity it allows you to combine
 // several 'reducer' functions that share this single state object.
-// They are combined into one root reducer which is passed to the store
-//
-// the shape of root reducer will then look like:
-//    {
-//      userInterface: {
-//        selectedId: 'ds34sjsa34',
-//        selectedPlayerName: 'Bob Smith'
-//      },
-//      players: [
-//        { mongo doc },
-//        { mongo doc },
-//        { mongo doc }
-//      ]
-//    }
-//
-// For Blaze and Meteor we *could* just read and write data into Minimongo directly
-// but then we wouldn't have a snapshot of the entire app state. The disadvantage is
-// that we now have two copies of the collection in memory.
-
-let rootReducer = combineReducers({
-  userInterface: Reducers.userInterface,
-  players: Reducers.players,
-});
+// They are combined into one root reducer which is passed to the store,
+// however for this app we only have one reducer.
 
 
 // applyMiddleware takes createStore() and returns a new wrapped createStore
@@ -32,4 +11,15 @@ let rootReducer = combineReducers({
 let createStoreWithMiddleware = applyMiddleware(logger)(createStore);
 
 
-store = createStoreWithMiddleware(rootReducer);
+store = createStoreWithMiddleware(appReducer);
+
+// add our own helper for reactive-dicts, you could
+// also just call getState
+store.getReactiveState = function(key) {
+  return store.getState().get(key);
+};
+
+// add a global helper for Blaze
+UI.registerHelper('store', function(key) {
+  return store.getState().get(key);
+});

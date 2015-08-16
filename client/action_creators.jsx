@@ -1,23 +1,12 @@
-// action creators are functions that take a param and return
-// an 'action' that is consumed by a reducer. This may seem like
+// action creators are functions that take a param, build up an 'action'
+// and return it to the consumer (reducer). This may seem like
 // unneeded boilerplate  but it's **really** nice to have a file
 // with *all* possible ways to mutate the state of the app.
 
 Actions = {};
 
-// used when a mongo players collection changes
-Actions.playersChanged = function playersChanged(newDocs) {
-  return {
-    type: 'PLAYERS_COLLECTION_CHANGED',
-    collection: newDocs
-  };
-};
-
-
-// doesn't return payload because our collection watcher
-// will send a CHANGED action and update the store
+// doesn't return payload because the reactive store state will re-render views
 Actions.incrementScore = function incrementScore(playerId) {
-  //let playerId = Session.get("selectedPlayer");
   Players.update({_id: playerId}, {$inc: {score: 5}});
   // TODO call FAILED action on error
   return { type: 'INCREMENT_SCORE' };
@@ -25,7 +14,6 @@ Actions.incrementScore = function incrementScore(playerId) {
 
 
 Actions.selectPlayer = function selectPlayer(playerId) {
-  Session.set("selectedPlayer", playerId);
   let player = Players.findOne(playerId);
   let playerName = player.name || "N/A";
 

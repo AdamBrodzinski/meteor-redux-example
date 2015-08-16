@@ -4,12 +4,6 @@
 Players = new Mongo.Collection("players");
 
 if (Meteor.isClient) {
-  // trigger a Redux action when collection data changes
-  // this adds it back into the system
-  trackCollection(Players, function(data) {
-    store.dispatch( Actions.playersChanged(data) );
-  });
-
   // events
 
   Template.leaderboard.events({
@@ -30,16 +24,13 @@ if (Meteor.isClient) {
   Template.leaderboard.helpers({
     players: function () {
       return Players.find({}, { sort: { score: -1, name: 1 } });
-    },
-    selectedName: function () {
-      var player = Players.findOne(Session.get("selectedPlayer"));
-      return player && player.name;
     }
   });
 
   Template.player.helpers({
     selected: function () {
-      return Session.equals("selectedPlayer", this._id) ? "selected" : '';
+      var playerId = store.getReactiveState('selectedPlayerId');
+      return (playerId === this._id) ? 'selected' : '';
     }
   });
 }

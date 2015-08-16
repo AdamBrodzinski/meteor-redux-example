@@ -6,7 +6,7 @@ logger = store => next => action => {
   log('\n[Dispatching]', action);
   // essentially call 'dispatch'
   let result = next(action);
-  log('[Store]', store.getState());
+  log('[Store]', store.getState().keys);
   return result;
 };
 
