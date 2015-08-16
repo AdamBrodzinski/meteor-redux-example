@@ -20,7 +20,7 @@
     {{/each}}
   </ol>
 
-  {{#if selectedName}}
+  {{#if store 'selectedPlayerName'}}
     <div class="details">
       <div class="name">{{store 'selectedPlayerName'}}</div>
       <button class="inc">Add 5 points</button>
