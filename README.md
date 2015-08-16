@@ -93,8 +93,6 @@ appReducer = function appReducer(state, action) {
 
 ### Useage
 
-- `cd meteor-flux-leaderboard`
-- `git checkout redux`
 - `meteor`
 - Open your browser to localhost:3000
 - Checkout action/store logs in console after clicking about
