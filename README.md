@@ -1,7 +1,4 @@
-# meteor-flux-leaderboard
-Flux Example with React &amp; Meteor
-
-## Redux Example
+# Meteor Redux
 
 Please read the fantastic Redux guide before/after diving into this. At first it may seem very complex
 but it turns out to be very simple once you understand the reducer flow.
@@ -10,70 +7,88 @@ but it turns out to be very simple once you understand the reducer flow.
 
 Basic gist (from Redux guide):
 
-```javascript
-import { createStore } from 'redux';
+Meteor apps need to store local app state in an organized way. Using Session works but can lead to
+maintainance problems down the road. Redux helps keep things organized and de-coupled.
 
-/**
- * This is a reducer, a pure function with (state, action) => state signature.
- * It describes how an action transforms the state into the next state.
- *
- * The shape of the state is up to you: it can be a primitive, an array, an object,
- * or even an Immutable.js data structure. The only important part is you should
- * return a new object if the state changes, instead of mutating the parameter.
- *
- * In this example, we use a `switch` statement and strings, but you can use a helper that
- * follows a different convention (such as function maps) that makes sense for your project.
- */
-function counter(state = 0, action) {
-  switch (action.type) {
-  case 'INCREMENT':
-    return state + 1;
-  case 'DECREMENT':
-    return state - 1;
-  default:
-    return state;
-  }
-}
+```javascript 
+  // global reactive store is setup on app startup
+  store = createStoreWithMiddleware(appReducer);
 
-// Create a Redux store that holds the state of your app.
-// Its API is { subscribe, dispatch, getState }.
-let store = createStore(counter);
-
-// You can subscribe to the updates manually, or use bindings to your view layer.
-store.subscribe(() =>
-  console.log(store.getState())
-);
-
-// The only way to mutate the internal state is to dispatch an action.
-// The actions can be serialized, logged or stored and later replayed.
-store.dispatch({ type: 'INCREMENT' });
-// 1
-store.dispatch({ type: 'INCREMENT' });
-// 2
-store.dispatch({ type: 'DECREMENT' });
-// 1
-```
-
-and to hook it up to a React component you just use `connect`
+  // store has initial empty values:
+  // {
+  //   selectedPlayerId: '',
+  //   selectedPlayerName: '',
+  //   foo: 1,
+  //   bar: 2,
+  // }
 
 
-```javascript
-let AppContainer = React.createClass({
-  render() {
-    return (<App {...this.props} />);
-  }
-});
+  // view calls action and returns into store dispatcher
+  //
+  Template.player.events({
+    'click': function () {
+      store.dispatch( Actions.selectPlayer(this._id) );
+    }
+  });     
+  
+  
+  // action 'creator' is a normal function that 
+  // just creates an action object and returns it
+  //
+  Actions.selectPlayer = function selectPlayer(playerId) {
+  let player = Players.findOne(playerId);
+  let playerName = player.name || "N/A";
 
-// choose what slice of state we send to the component & it's children
-function mapStateToProps(state) {
   return {
-    players: state.players,
-    selectedId: state.userInterface.selectedId,
+    type: 'SELECT_PLAYER',
+    playerId: playerId,
+    playerName: playerName
   };
+};   
+
+
+// app reducer catches action in switch statement and can mutate the
+// data based on action payload metadata. reactState is a reactive-dict
+// so we just set the final value and return the dict when done.
+//
+// if the app was large we could have several reducers that combine the
+// state into the final root object. Redux can only have 1 store
+//
+appReducer = function appReducer(state, action) {
+  state = state || reacState;
+  // see action_creators.jsx for action payloads
+
+  switch (action.type) {
+    case 'SELECT_PLAYER':
+      // we're setting the reactive dict here
+      state.set('selectedPlayerId', action.playerId);
+      state.set('selectedPlayerName', action.playerName);
+      // then returning the entire dict when done
+      return state;
+    case 'INCREMENT_SCORE':
+      // collections are in Minimono but you could also keep
+      // them here if its easier to have all data in one place
+      // see React repo for example of that
+      return state;
+    default:
+      return state;
+  }
 }
 
-this.AppContainer = connect(mapStateToProps)(AppContainer);
+
+// templates can consume this global state with the `store` helper
+// but can only mutate it by calling an action
+//
+<template name="leaderboard">
+  {{#if store 'selectedPlayerName'}}
+    <div class="details">
+      <div class="name">{{store 'selectedPlayerName'}}</div>
+    </div>
+  {{else}}
+</template>
+
 ```
+
 
 
 ### Useage
@@ -83,25 +98,3 @@ this.AppContainer = connect(mapStateToProps)(AppContainer);
 - `meteor`
 - Open your browser to localhost:3000
 - Checkout action/store logs in console after clicking about
-
-
-<br>
-### Todo
-
-- [X] Basic functinality
-- [ ] Handle hot code reload (snapshot and restore on reload)
-- [ ] Serverside rendering branch (started, shared files but no SSR)
-- [ ] Immutible stores for rendering performance
-- [ ] React Router using actions
-
-Key pieces are in CollectionActions/Store, Tracker watches for changes on the Minimongo clientside cache and emits a change event when data changes. This retains all the optimistic UI and realtime data capabilities that Meteor offers.
-
-```
- Tracker.autorun(computation => {
-    var docs = Players.find({}).fetch();
-
-    if (computation.firstRun) return; // ignore first empty run
-
-    this.CollectionActions.playersChanged(docs);
-  });
-```
