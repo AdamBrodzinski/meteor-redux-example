@@ -8,7 +8,7 @@ if (Meteor.isClient) {
 
   Template.leaderboard.events({
     'click .inc': function () {
-      var playerId = store.getState().userInterface.selectedId;
+      var playerId = store.getReactiveState('selectedPlayerId');
       store.dispatch( Actions.incrementScore(playerId) );
     }
   });

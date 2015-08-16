@@ -9,11 +9,11 @@ let { incrementScore, selectPlayer, playersChanged } = Actions;
 
 // we'll use a reactive dict as the root state object
 // so that our views can auto-render on change
-reacState = new ReactiveDict('redux-state');
+var reactiveState = new ReactiveDict('redux-state');
 
 
 appReducer = function appReducer(state, action) {
-  state = state || reacState;
+  state = state || reactiveState;
   // see action_creators.jsx for action payloads
 
   switch (action.type) {
