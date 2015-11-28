@@ -66,7 +66,7 @@ appReducer = function appReducer(state, action) {
       // then returning the entire dict when done
       return state;
     case 'INCREMENT_SCORE':
-      // collections are in Minimono but you could also keep
+      // collections are in Minimongo but you could also keep
       // them here if its easier to have all data in one place
       // see React repo for example of that
       return state;
