@@ -80,9 +80,9 @@ appReducer = function appReducer(state, action) {
 // but can only mutate it by calling an action
 //
 <template name="leaderboard">
-  {{#if store 'selectedPlayerName'}}
+  {{#with store 'selectedPlayerName'}}
     <div class="details">
-      <div class="name">{{store 'selectedPlayerName'}}</div>
+      <div class="name">{{this}}</div>
     </div>
   {{else}}
 </template>
