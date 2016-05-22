@@ -1,4 +1,5 @@
-let { createStore, combineReducers, applyMiddleware } = Redux;
+const { createStore, combineReducers, applyMiddleware } = Redux;
+const { devTools, persistState } = ReduxDevTools;
 
 // Redux has a single store. to reduce complexity it allows you to combine
 // several 'reducer' functions that share this single state object.
@@ -8,10 +9,20 @@ let { createStore, combineReducers, applyMiddleware } = Redux;
 
 // applyMiddleware takes createStore() and returns a new wrapped createStore
 // note, this is an optional step to use middleware (we're auto console.log dispatches)
-let createStoreWithMiddleware = applyMiddleware(logger)(createStore);
+// let createStoreWithMiddleware = applyMiddleware(logger)(createStore);
 
+const createStoreWithMiddleware =
+  applyMiddleware(logger)(
+    devTools()(
+      persistState(window.location.href.match(/[?&]debug_session=([^&]+)\b/))(
+        createStore
+      )
+    )
+  );
 
 store = createStoreWithMiddleware(appReducer);
+
+
 
 // add our own helper for reactive-dicts, you could
 // also just call getState
