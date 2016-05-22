@@ -39,6 +39,11 @@ npm-container@1.0.0
 observe-sequence@1.0.6
 ordered-dict@1.0.3
 random@1.0.3
+react@0.1.1
+react-meteor-data@0.1.5
+react-runtime@0.13.3_6
+react-runtime-dev@0.13.3_5
+react-runtime-prod@0.13.3_4
 reactive-dict@1.1.0
 reactive-var@1.0.5
 reload@1.1.3

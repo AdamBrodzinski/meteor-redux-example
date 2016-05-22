@@ -10,6 +10,6 @@ meteor-platform
 meteorhacks:npm
 npm-container
 cosmos:browserify
-jsx
 skinnygeek1010:flux-helpers
 reactive-dict
+react
