@@ -91,7 +91,7 @@ appReducer = function appReducer(state, action) {
 
 
 
-### Useage
+### Usage
 
 - `meteor`
 - Open your browser to localhost:3000
